@@ -1544,5 +1544,416 @@ window.QUIZ_DATA = {
       "section": "4",
       "source": "Miaskowski_95.pdf"
     }
+  ],
+  "preloadedSets": [
+    {
+      "id": "pun-poprawa-v2",
+      "title": "Projektowanie uniwersalne",
+      "badge": "Wgrany automatycznie",
+      "description": "20 pytań z pliku pun_poprawa_v2.pdf.",
+      "source": "pun_poprawa_v2.pdf",
+      "questions": [
+        {
+          "id": "1",
+          "question": "Projektowanie uniwersalne jest to:",
+          "answer": "projektowanie produktów i środowiska, w taki sposób by mogły być używane przez wszystkich ludzi, w możliwie szerokim zakresie, bez potrzeby adaptacji lub specjalnego projektowania.",
+          "choices": [
+            "projektowanie produktów i środowiska, w taki sposób by mogły być używane przez wszystkich ludzi, w możliwie szerokim zakresie, bez potrzeby adaptacji lub specjalnego projektowania.",
+            "projektowanie produktów i środowiska, w taki sposób by mogły być używane przez ludzi z określonymi dysfunkcjami, w możliwie szerokim zakresie.",
+            "filozofia projektowania produktów i otoczenia w taki sposób, aby były one dostępne i wykorzystywane, w jak największym stopniu przez wszystkich ludzi, niezależnie od ich wieku, wzrostu, zdolności, czy też niepełnosprawności.",
+            "produktów i otoczenia, w taki sposób by mogły być używane przede wszystkim przez osoby niepełnosprawne, w możliwie szerokim zakresie."
+          ],
+          "correctIndex": 0,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "2",
+          "question": "Termin „Projektowanie uniwersalne” po raz pierwszy został użyty:",
+          "answer": "w 1985 roku.; przez architekta Ronalda Mace'a.",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. w 1985 roku.",
+              "correct": true
+            },
+            {
+              "text": "B. przez architekta Daniela Libeskinda.",
+              "correct": false
+            },
+            {
+              "text": "C. w 1975 roku.",
+              "correct": false
+            },
+            {
+              "text": "D. przez architekta Ronalda Mace'a.",
+              "correct": true
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "3",
+          "question": "Strategia projektowania uniwersalnego:",
+          "answer": "promuje zrównoważony rozwój.; pomaga w kształtowaniu przekonania, że dostępność i cechy użyteczności są postrzegane, jako naturalny oraz integralny składnik projektu.",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. promuje zrównoważony rozwój.",
+              "correct": true
+            },
+            {
+              "text": "B. promuje osoby niepełnosprawne.",
+              "correct": false
+            },
+            {
+              "text": "C. pomaga w kształtowaniu przekonania, że dostępność i cechy użyteczności są postrzegane, jako naturalny oraz integralny składnik projektu.",
+              "correct": true
+            },
+            {
+              "text": "D. zakłada przede wszystkim wsparcie osób z dysfunkcjami.",
+              "correct": false
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "4",
+          "question": "Definicja projektowania uniwersalnego została oparta o:",
+          "answer": "osiem zasad.",
+          "choices": [
+            "siedem zasad.",
+            "osiem zasad określonych przez Centrum Projektowania Uniwersalnego Uniwersytetu Północnej Karoliny (USA).",
+            "siedem zasad określonych w obowiązujących aktualnie aktach prawnych.",
+            "osiem zasad."
+          ],
+          "correctIndex": 3,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "5",
+          "question": "Do zasad projektowania uniwersalnego należą:",
+          "answer": "Użyteczność dla osób o różnej sprawności.; Proste i intuicyjne użytkowanie.",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. Użyteczność dla osób o różnej sprawności.",
+              "correct": true
+            },
+            {
+              "text": "B. Brak tolerancji na błędy.",
+              "correct": false
+            },
+            {
+              "text": "C. Proste i intuicyjne użytkowanie.",
+              "correct": true
+            },
+            {
+              "text": "D. Percepcja równości.",
+              "correct": false
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "6",
+          "question": "Zasada tolerancji na błędy wskazuje:",
+          "answer": "że należy minimalizować zagrożenia i negatywne skutki przypadkowych konsekwencji podczas użytkowania rozwiązań technicznych i przestrzennych.",
+          "choices": [
+            "na konieczność zastosowania informacji z uwzględnieniem zakresów percepcji człowieka i warunków otoczenia.",
+            "że należy stosować rozwiązania i ich lokalizację w taki sposób, aby były dostępne i jednocześnie eliminować wszelkie zagrożenia podczas ich użytkowania.",
+            "że należy stosować rozwiązania cechujące się bezpieczeństwem użytkowania, ograniczać czynności, które powodują znużenie i wymagają skupienia podczas użytkowania.",
+            "że należy minimalizować zagrożenia i negatywne skutki przypadkowych konsekwencji podczas użytkowania rozwiązań technicznych i przestrzennych."
+          ],
+          "correctIndex": 3,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "7",
+          "question": "Do zasad projektowania uniwersalnego należą:",
+          "answer": "Elastyczność w użytkowaniu.; Wygodne użytkowanie bez wysiłku.",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. Użyteczność dla osób z określonymi dysfunkcjami i niepełnosprawnościami.",
+              "correct": false
+            },
+            {
+              "text": "B. Elastyczność w użytkowaniu.",
+              "correct": true
+            },
+            {
+              "text": "C. Czytelne oznaczenia.",
+              "correct": false
+            },
+            {
+              "text": "D. Wygodne użytkowanie bez wysiłku.",
+              "correct": true
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "8",
+          "question": "Równość szans definiowana jest jako:",
+          "answer": "prawo do sprawiedliwego dostępu do różnych życiowych możliwości.; umożliwienie wszystkim osobom - bez względu na płeć, wiek, niepełnosprawność, rasę lub pochodzenie etniczne, wyznawaną religię lub światopogląd, orientację seksualną - sprawiedliwego, pełnego uczestnictwa we wszystkich dziedzinach życia na jednakowych zasadach.",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. prawo do sprawiedliwego dostępu do różnych życiowych możliwości.",
+              "correct": true
+            },
+            {
+              "text": "B. umożliwienie wszystkim osobom - bez względu na płeć, wiek, niepełnosprawność, rasę lub pochodzenie etniczne, wyznawaną religię lub światopogląd, orientację seksualną - sprawiedliwego, pełnego uczestnictwa we wszystkich dziedzinach życia na jednakowych zasadach.",
+              "correct": true
+            },
+            {
+              "text": "C. możliwość wyboru drogi życiowej bez ograniczeń wynikających ze stereotypów płci.",
+              "correct": false
+            },
+            {
+              "text": "D. prawo do sprawiedliwego i równego dostępu do komunikacji społecznej. Z równością szans związany jest w szczególności zakaz dyskryminacji.",
+              "correct": false
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "9",
+          "question": "Przykładem dyskryminacji na poziomie indywidualnym jest:",
+          "answer": "odmowa zapisania do szkoły dziecka chorego np. na autyzm.; zatrudnianie wyłącznie mężczyzn na kierowniczych stanowiskach, i nieawansowanie kobiet pomimo posiadania przez nie równorzędnych lub wyższych kwalifikacji zawodowych.; molestowanie seksualne.",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. odmowa zapisania do szkoły dziecka chorego np. na autyzm.",
+              "correct": true
+            },
+            {
+              "text": "B. zatrudnianie wyłącznie mężczyzn na kierowniczych stanowiskach, i nieawansowanie kobiet pomimo posiadania przez nie równorzędnych lub wyższych kwalifikacji zawodowych.",
+              "correct": true
+            },
+            {
+              "text": "C. odmowa wejścia do restauracji z psem asystentem.",
+              "correct": false
+            },
+            {
+              "text": "D. molestowanie seksualne.",
+              "correct": true
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "10",
+          "question": "Przykładem dyskryminacji na poziomie instytucjonalnym:",
+          "answer": "są bariery architektoniczne dla osób niepełnosprawnych.; jest odmowa wejścia do restauracji z psem asystentem.; jest brak niezbędnych ułatwień dla osoby z niepełnosprawnością w miejscu pracy.",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. są bariery architektoniczne dla osób niepełnosprawnych.",
+              "correct": true
+            },
+            {
+              "text": "B. jest odmowa wejścia do restauracji z psem asystentem.",
+              "correct": true
+            },
+            {
+              "text": "C. odmowa zatrudnienia z powodu płci czy niepełnosprawności.",
+              "correct": false
+            },
+            {
+              "text": "D. jest brak niezbędnych ułatwień dla osoby z niepełnosprawnością w miejscu pracy.",
+              "correct": true
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "11",
+          "question": "„Szklane ściany” to dyskryminacja kobiet ze względu na:",
+          "answer": "brak możliwości awansu.",
+          "choices": [
+            "utrzymywanie niskopłatnych stanowisk.",
+            "bariery utrudniające dojście do wysokiej pozycji w biznesie lub polityce.",
+            "brak możliwości awansu.",
+            "niezatrudnianie kobiet na stanowiskach stereotypowo przynależnych mężczyznom."
+          ],
+          "correctIndex": 2,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "12",
+          "question": "Na rynku pracy występuje dyskryminacja kobiet określana pojęciem:",
+          "answer": "„szklane ruchome schody”; „aksamitne getto”",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. „szklane ruchome schody”",
+              "correct": true
+            },
+            {
+              "text": "B. „lepka podłoga”",
+              "correct": false
+            },
+            {
+              "text": "C. „szybka winda”",
+              "correct": false
+            },
+            {
+              "text": "D. „aksamitne getto”",
+              "correct": true
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "13",
+          "question": "„Szklany sufit” to dyskryminacja kobiet ze względu na:",
+          "answer": "bariery utrudniające dojście do wysokiej pozycji w biznesie lub polityce.",
+          "choices": [
+            "brak możliwości awansu.",
+            "powierzanie funkcji kierowniczych mężczyznom w firmach w których większość pracowników stanowią kobiety.",
+            "bariery utrudniające dojście do wysokiej pozycji w biznesie lub polityce.",
+            "stawianie kobietom większych wymagań niż mężczyznom przy awansie na takie samo stanowisko."
+          ],
+          "correctIndex": 2,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "14",
+          "question": "Standard ISO 21542:2011 - Konstrukcja budynku - Dostępność i użyteczność środowiska zbudowanego określa wymagania i rekomendacje dla architektów, inżynierów, producentów i ustawodawców w zakresie zrównoważonego środowiska dostępnego dla szerokiego grona użytkowników. W odniesieniu do instalacji i urządzeń elektrycznych dotyczy on m.in.:",
+          "answer": "stosowania źródeł światła zapobiegających olśnieniu.",
+          "choices": [
+            "automatycznych klap oddymiających i zraszaczy oraz przeciwpożarowych wyłączników prądu.",
+            "stosowania źródeł światła zapobiegających olśnieniu.",
+            "sposobu prowadzenia przewodów elektrycznych w strefach zagrożonych pożarem.",
+            "sposobu realizacji zasilania w energię elektryczną budynków użyteczności publicznej."
+          ],
+          "correctIndex": 1,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "15",
+          "question": "Konieczność spełnienia wymagań w zakresie bezpieczeństwa użytkowania i dostępności obiektów narzuca / narzucają:",
+          "answer": "ustawa „Prawo budowlane”.",
+          "choices": [
+            "przepisy techniczno-budowlane.",
+            "ustawa „Prawo budowlane”.",
+            "Konstytucja Rzeczypospolitej Polskiej.",
+            "ustawa „Kodeks pracy”."
+          ],
+          "correctIndex": 1,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "16",
+          "question": "W stosunku do obiektów użyteczności publicznej i mieszkaniowego budownictwa wielorodzinnego odstępstwo od przepisów techniczno-budowlanych:",
+          "answer": "nie może powodować ograniczenia dostępności dla osób ze szczególnymi potrzebami.",
+          "choices": [
+            "może powodować ograniczenia dostępności dla osób ze szczególnymi potrzebami.",
+            "może powodować ograniczenia dostępności dla osób ze szczególnymi potrzebami przy jednoczesnym spełnieniu dodatkowych wymagań.",
+            "nie może powodować ograniczenia dostępności dla osób ze szczególnymi potrzebami.",
+            "nie może powodować ograniczenia dostępności dla osób ze szczególnymi potrzebami, za wyjątkiem rozwiązań określonych w odrębnych przepisach."
+          ],
+          "correctIndex": 2,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "17",
+          "question": "Sposób spełnienia wymagań w zakresie bezpieczeństwa użytkowania i dostępności obiektów określa / określają:",
+          "answer": "przepisy techniczno-budowlane, czyli tzw. warunki techniczne jakim powinny podlegać obiekty budowlane i ich usytuowanie.",
+          "choices": [
+            "ustawa „Prawo budowlane”.",
+            "projekt budowlany.",
+            "przepisy techniczno-budowlane, czyli tzw. warunki techniczne jakim powinny podlegać obiekty budowlane i ich usytuowanie.",
+            "odpowiednie normy techniczne."
+          ],
+          "correctIndex": 2,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "18",
+          "question": "Niezbędne warunki do korzystania z obiektu budowlanego przez osoby ze szczególnymi potrzebami określa projekt budowlany w części pn.:",
+          "answer": "projekt architektoniczno-budowlany.",
+          "choices": [
+            "projekt techniczny.",
+            "plan bezpieczeństwa i ochrony zdrowia.",
+            "projekt architektoniczno-budowlany.",
+            "projekt zagospodarowania działki lub terenu."
+          ],
+          "correctIndex": 2,
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "19",
+          "question": "Standardy projektowania uniwersalnego w budynku zamieszkania wielorodzinnego spełnia domofon:",
+          "answer": "w kolorach kontrastujących względem tła, na którym się znajduje.; ekran domofonu powinien znajdować się nie wyżej niż 120 cm nad poziomem podłogi / chodnika.; przyciski domofonu powinny znajdować się na wysokości od 80 cm do 110 cm nad poziomem podłogi / chodnika.",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. w kolorach kontrastujących względem tła, na którym się znajduje.",
+              "correct": true
+            },
+            {
+              "text": "B. ekran domofonu powinien znajdować się nie wyżej niż 120 cm nad poziomem podłogi / chodnika.",
+              "correct": true
+            },
+            {
+              "text": "C. ekran domofonu powinien znajdować się wyżej niż 120 cm nad poziomem podłogi / chodnika.",
+              "correct": false
+            },
+            {
+              "text": "D. przyciski domofonu powinny znajdować się na wysokości od 80 cm do 110 cm nad poziomem podłogi / chodnika.",
+              "correct": true
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        },
+        {
+          "id": "20",
+          "question": "Na drogach ewakuacyjnych i w pomieszczeniach obiektów przeznaczonych dla osób z niepełnosprawnościami należy stosować:",
+          "answer": "Dźwiękowy System Ostrzegawczy DSO.; awaryjne oświetlenie ewakuacyjne.; dodatkowe oprawy oświetleniowe stale pracujące nad wyjściami ewakuacyjnymi.; zasadę dwóch zmysłów.",
+          "type": "multiSelect",
+          "items": [
+            {
+              "text": "A. Dźwiękowy System Ostrzegawczy DSO.",
+              "correct": true
+            },
+            {
+              "text": "B. awaryjne oświetlenie ewakuacyjne.",
+              "correct": true
+            },
+            {
+              "text": "C. dodatkowe oprawy oświetleniowe stale pracujące nad wyjściami ewakuacyjnymi.",
+              "correct": true
+            },
+            {
+              "text": "D. zasadę dwóch zmysłów.",
+              "correct": true
+            }
+          ],
+          "section": "Projektowanie uniwersalne",
+          "source": "pun_poprawa_v2.pdf"
+        }
+      ]
+    }
   ]
 };

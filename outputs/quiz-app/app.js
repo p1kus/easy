@@ -15,6 +15,7 @@ const state = {
 };
 
 const DEFAULT_DATA = window.QUIZ_DATA?.questions ?? [];
+const PRELOADED_SETS = window.QUIZ_DATA?.preloadedSets ?? [];
 let data = [];
 let importedQuiz = null;
 let importedReport = null;
@@ -27,6 +28,13 @@ const quizCatalog = [
     description: "Gotowy zestaw z pytań o uczenie maszynowe.",
     questions: DEFAULT_DATA,
   },
+  ...PRELOADED_SETS.map((set) => ({
+    id: set.id,
+    title: set.title,
+    badge: set.badge || "Wgrany automatycznie",
+    description: set.description || `Gotowy zestaw z pliku ${set.source || "PDF"}.`,
+    questions: set.questions || [],
+  })),
 ];
 const STATS_KEY = "mlQuizQuestionStats:v1";
 const HARD_DISTRACTORS = {
