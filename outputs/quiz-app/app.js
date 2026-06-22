@@ -372,8 +372,12 @@ const useImportedQuiz = document.querySelector("#useImportedQuiz");
 const resetDefaultQuiz = document.querySelector("#resetDefaultQuiz");
 const exportImportedQuiz = document.querySelector("#exportImportedQuiz");
 
-if (window.pdfjsLib) {
-  window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+async function ensurePdfJs() {
+  if (!window.pdfjsLib) {
+    window.pdfjsLib = await import("./vendor/pdf.min.mjs");
+  }
+  window.pdfjsLib.GlobalWorkerOptions.workerSrc = "./vendor/pdf.worker.min.mjs";
+  return window.pdfjsLib;
 }
 
 function loadStats() {
@@ -605,42 +609,91 @@ function isCorrectAnswerColor(color) {
   return g > 0.45 && g > r * 1.35 && g > b * 1.2;
 }
 
-async function extractColoredTexts(page) {
-  const operators = await page.getOperatorList();
-  const OPS = window.pdfjsLib.OPS;
-  const coloredTexts = [];
-  let fillColor = [0, 0, 0];
+function hasGreenPixels(canvas, x, y, width, height) {
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  const left = Math.max(0, Math.floor(x));
+  const top = Math.max(0, Math.floor(y));
+  const right = Math.min(canvas.width, Math.ceil(x + width));
+  const bottom = Math.min(canvas.height, Math.ceil(y + height));
+  const sampleWidth = right - left;
+  const sampleHeight = bottom - top;
 
-  operators.fnArray.forEach((fn, index) => {
-    const args = operators.argsArray[index];
-    if (fn === OPS.setFillRGBColor) {
-      fillColor = normalizePdfColor(args) || fillColor;
+  if (sampleWidth <= 0 || sampleHeight <= 0) {
+    return false;
+  }
+
+  const pixels = context.getImageData(left, top, sampleWidth, sampleHeight).data;
+  let greenPixels = 0;
+  let coloredPixels = 0;
+
+  for (let i = 0; i < pixels.length; i += 4) {
+    const alpha = pixels[i + 3];
+    if (alpha < 80) {
+      continue;
+    }
+
+    const r = pixels[i] / 255;
+    const g = pixels[i + 1] / 255;
+    const b = pixels[i + 2] / 255;
+    const isInk = r < 0.86 || g < 0.86 || b < 0.86;
+    if (!isInk) {
+      continue;
+    }
+
+    coloredPixels += 1;
+    if (isCorrectAnswerColor([r, g, b])) {
+      greenPixels += 1;
+    }
+  }
+
+  return greenPixels >= 3 && greenPixels / Math.max(1, coloredPixels) > 0.18;
+}
+
+async function extractColoredTextsFromRender(page, content) {
+  const scale = 2;
+  const viewport = page.getViewport({ scale });
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.ceil(viewport.width);
+  canvas.height = Math.ceil(viewport.height);
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  await page.render({ canvasContext: context, viewport }).promise;
+
+  const coloredTexts = [];
+
+  content.items.forEach((item) => {
+    const text = normalizePlainText(item.str);
+    if (!text) {
       return;
     }
-    if (fn === OPS.setFillGray) {
-      const gray = Number(args?.[0] ?? 0);
-      const normalized = gray > 1 ? gray / 255 : gray;
-      fillColor = [normalized, normalized, normalized];
-      return;
-    }
-    if (fn === OPS.showText || fn === OPS.showSpacedText) {
-      const text = normalizePlainText(getOperatorText(args));
-      if (text && isCorrectAnswerColor(fillColor)) {
-        coloredTexts.push(text);
-      }
+
+    const transform = window.pdfjsLib.Util.transform(viewport.transform, item.transform);
+    const fontHeight = Math.hypot(transform[2], transform[3]) || (item.height || 10) * scale;
+    const x = transform[4];
+    const y = transform[5] - fontHeight;
+    const width = Math.max(item.width * scale, text.length * fontHeight * 0.25);
+    const height = fontHeight * 1.35;
+
+    if (hasGreenPixels(canvas, x - 2, y - 2, width + 4, height + 4)) {
+      coloredTexts.push(text);
     }
   });
 
   return coloredTexts;
 }
 
-async function extractPdfData(file) {
-  if (!window.pdfjsLib) {
-    throw new Error("Nie udało się załadować pdf.js. Sprawdź połączenie z internetem.");
+async function extractColoredTexts(page, content) {
+  try {
+    return await extractColoredTextsFromRender(page, content);
+  } catch {
+    return [];
   }
+}
+
+async function extractPdfData(file) {
+  const pdfjsLib = await ensurePdfJs();
 
   const buffer = await file.arrayBuffer();
-  const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
+  const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
   const pages = [];
   const coloredTexts = [];
 
@@ -668,7 +721,7 @@ async function extractPdfData(file) {
       .map(normalizePlainText)
       .filter(Boolean);
     pages.push(pageLines.join("\n"));
-    coloredTexts.push(...await extractColoredTexts(page));
+    coloredTexts.push(...await extractColoredTexts(page, content));
   }
 
   return {
