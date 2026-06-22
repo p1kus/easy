@@ -11,12 +11,23 @@ const state = {
   mode: "endless",
   difficulty: "normal",
   stats: {},
+  activeQuizId: null,
 };
 
 const DEFAULT_DATA = window.QUIZ_DATA?.questions ?? [];
-let data = [...DEFAULT_DATA];
+let data = [];
 let importedQuiz = null;
 let importedReport = null;
+let importCounter = 0;
+const quizCatalog = [
+  {
+    id: "ml-default",
+    title: "Quiz ML",
+    badge: "Wgrany automatycznie",
+    description: "Gotowy zestaw z pytań o uczenie maszynowe.",
+    questions: DEFAULT_DATA,
+  },
+];
 const STATS_KEY = "mlQuizQuestionStats:v1";
 const HARD_DISTRACTORS = {
   "1.1": [
@@ -352,6 +363,7 @@ const feedback = document.querySelector("#feedback");
 const questionImage = document.querySelector("#questionImage");
 const questionNumber = document.querySelector("#questionNumber");
 const poolSize = document.querySelector("#poolSize");
+const scoreboard = document.querySelector("#scoreboard");
 const answered = document.querySelector("#answered");
 const accuracy = document.querySelector("#accuracy");
 const checkButton = document.querySelector("#checkButton");
@@ -364,12 +376,15 @@ const finiteMode = document.querySelector("#finiteMode");
 const worstMode = document.querySelector("#worstMode");
 const normalDifficulty = document.querySelector("#normalDifficulty");
 const hardDifficulty = document.querySelector("#hardDifficulty");
+const libraryPanel = document.querySelector("#libraryPanel");
+const quizLibrary = document.querySelector("#quizLibrary");
+const quizWorkspace = document.querySelector("#quizWorkspace");
+const chooseQuizButton = document.querySelector("#chooseQuizButton");
 const pdfInput = document.querySelector("#pdfInput");
 const fileDrop = document.querySelector(".file-drop");
 const importStatus = document.querySelector("#importStatus");
 const importPreview = document.querySelector("#importPreview");
 const useImportedQuiz = document.querySelector("#useImportedQuiz");
-const resetDefaultQuiz = document.querySelector("#resetDefaultQuiz");
 const exportImportedQuiz = document.querySelector("#exportImportedQuiz");
 
 async function ensurePdfJs() {
@@ -941,8 +956,57 @@ window.QuizImporter = {
   parseData: parseImportedQuizData,
 };
 
-function setQuizData(nextData) {
+function getQuizStatsLabel(questions) {
+  const count = questions.length;
+  if (count === 1) {
+    return "1 pytanie";
+  }
+  return `${count} pytań`;
+}
+
+function renderQuizLibrary() {
+  quizLibrary.innerHTML = "";
+
+  quizCatalog.forEach((entry) => {
+    const button = document.createElement("button");
+    button.className = "quiz-card-button";
+    button.type = "button";
+    const badge = document.createElement("span");
+    badge.className = "quiz-card-badge";
+    badge.textContent = entry.badge;
+    const title = document.createElement("strong");
+    title.textContent = entry.title;
+    const description = document.createElement("span");
+    description.textContent = entry.description;
+    const count = document.createElement("small");
+    count.textContent = getQuizStatsLabel(entry.questions);
+    button.append(badge, title, description, count);
+    button.addEventListener("click", () => selectQuiz(entry.id));
+    quizLibrary.append(button);
+  });
+}
+
+function showLibrary() {
+  state.activeQuizId = null;
+  quizWorkspace.hidden = true;
+  scoreboard.hidden = true;
+  chooseQuizButton.hidden = true;
+  libraryPanel.hidden = false;
+  questionText.textContent = "";
+  answerGrid.innerHTML = "";
+  feedback.hidden = true;
+}
+
+function showQuizWorkspace() {
+  libraryPanel.hidden = true;
+  quizWorkspace.hidden = false;
+  scoreboard.hidden = false;
+  chooseQuizButton.hidden = false;
+}
+
+function setQuizData(nextData, quizId = null) {
   data = nextData;
+  state.activeQuizId = quizId;
   state.current = null;
   state.currentIndex = null;
   state.currentRecord = null;
@@ -950,8 +1014,17 @@ function setQuizData(nextData) {
   state.correct = 0;
   state.history = [];
   resetPools();
+  showQuizWorkspace();
   updateScore();
   drawQuestion({ pushHistory: false });
+}
+
+function selectQuiz(quizId) {
+  const entry = quizCatalog.find((item) => item.id === quizId);
+  if (!entry) {
+    return;
+  }
+  setQuizData([...entry.questions], entry.id);
 }
 
 function shuffle(items) {
@@ -1695,6 +1768,10 @@ function updateNavigationState() {
 }
 
 function resetScore() {
+  if (!data.length) {
+    return;
+  }
+
   state.answered = 0;
   state.correct = 0;
   state.history = [];
@@ -1747,6 +1824,11 @@ function setMode(mode) {
   }
 
   state.mode = mode;
+  if (!data.length) {
+    updateNavigationState();
+    return;
+  }
+
   state.answered = 0;
   state.correct = 0;
   state.history = [];
@@ -1806,13 +1888,20 @@ function useImportedQuestions() {
   if (!importedQuiz?.length) {
     return;
   }
-  setQuizData(importedQuiz);
-  setImportStatus(`Aktywna pula: ${importedQuiz.length} pytań z importu.`);
-}
 
-function resetToDefaultQuestions() {
-  setQuizData([...DEFAULT_DATA]);
-  setImportStatus("Aktywna pula: domyślny quiz ML.");
+  importCounter += 1;
+  const title = importedReport?.fileName?.replace(/\.pdf$/i, "") || `Import ${importCounter}`;
+  const entry = {
+    id: `import-${Date.now()}-${importCounter}`,
+    title,
+    badge: "Własny import",
+    description: `Zestaw wygenerowany z pliku ${importedReport?.fileName || "PDF"}.`,
+    questions: [...importedQuiz],
+  };
+  quizCatalog.push(entry);
+  renderQuizLibrary();
+  setImportStatus(`Dodano zestaw: ${getQuizStatsLabel(entry.questions)}.`);
+  selectQuiz(entry.id);
 }
 
 function exportImportedQuestions() {
@@ -1861,9 +1950,11 @@ fileDrop.addEventListener("dragover", (event) => {
 fileDrop.addEventListener("dragleave", () => fileDrop.classList.remove("drag-over"));
 fileDrop.addEventListener("drop", handlePdfDrop);
 useImportedQuiz.addEventListener("click", useImportedQuestions);
-resetDefaultQuiz.addEventListener("click", resetToDefaultQuestions);
 exportImportedQuiz.addEventListener("click", exportImportedQuestions);
+chooseQuizButton.addEventListener("click", showLibrary);
 
 state.stats = loadStats();
-resetPools();
-drawQuestion({ pushHistory: false });
+renderQuizLibrary();
+updateScore();
+updateNavigationState();
+showLibrary();

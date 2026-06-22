@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nieskończony quiz ML</title>
+    <title>easy</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -12,64 +12,77 @@
         <header class="topbar">
           <div>
             <p class="kicker">Quiz do nauki</p>
-            <h1>Nieskończony quiz ML</h1>
+            <h1>easy</h1>
           </div>
-          <div class="scoreboard" aria-label="Wynik">
-            <span><strong id="answered">0</strong> odpowiedzi</span>
-            <span><strong id="accuracy">0%</strong> skuteczność</span>
+          <div class="top-actions">
+            <div id="scoreboard" class="scoreboard" aria-label="Wynik" hidden>
+              <span><strong id="answered">0</strong> odpowiedzi</span>
+              <span><strong id="accuracy">0%</strong> skuteczność</span>
+            </div>
+            <button id="chooseQuizButton" class="ghost-button compact-button" type="button" hidden>Zmień quiz</button>
           </div>
         </header>
 
-        <div class="mode-row" aria-label="Tryb quizu">
-          <span>Tryb</span>
-          <div class="mode-switch mode-switch-3">
-            <button id="endlessMode" class="mode-button active" type="button">Nieskończony</button>
-            <button id="finiteMode" class="mode-button" type="button">Bez powtórek</button>
-            <button id="worstMode" class="mode-button" type="button">Najgorsze</button>
+        <section id="libraryPanel" class="library-panel" aria-label="Zestawy quizów">
+          <div class="section-heading">
+            <h2>Wybierz zestaw</h2>
+            <p>Wybierz gotowy zestaw albo wrzuć PDF, żeby wygenerować własny quiz.</p>
           </div>
-        </div>
 
-        <div class="mode-row" aria-label="Trudność odpowiedzi">
-          <span>Trudność</span>
-          <div class="mode-switch mode-switch-2">
-            <button id="normalDifficulty" class="mode-button active" type="button">Normal</button>
-            <button id="hardDifficulty" class="mode-button" type="button">Hard</button>
-          </div>
-        </div>
+          <div id="quizLibrary" class="quiz-library"></div>
 
-        <section class="import-panel" aria-label="Importer PDF">
-          <label class="file-drop">
-            <input id="pdfInput" type="file" accept="application/pdf">
-            <span class="file-drop-title">Wrzuć PDF z pytaniami</span>
-            <span id="importStatus" class="import-status">Kliknij tutaj albo przeciągnij plik PDF.</span>
-          </label>
-          <div id="importPreview" class="import-preview" hidden></div>
-          <div class="import-actions">
-            <button id="useImportedQuiz" class="primary-button" type="button" disabled>Użyj wygenerowanego quizu</button>
-            <button id="resetDefaultQuiz" class="ghost-button" type="button">Wróć do domyślnej puli</button>
-            <button id="exportImportedQuiz" class="ghost-button" type="button" disabled>Eksportuj JSON</button>
-          </div>
+          <section class="import-panel" aria-label="Importer PDF">
+            <label class="file-drop">
+              <input id="pdfInput" type="file" accept="application/pdf">
+              <span class="file-drop-title">Wrzuć PDF z pytaniami</span>
+              <span id="importStatus" class="import-status">Kliknij tutaj albo przeciągnij plik PDF.</span>
+            </label>
+            <div id="importPreview" class="import-preview" hidden></div>
+            <div class="import-actions">
+              <button id="useImportedQuiz" class="primary-button" type="button" disabled>Użyj wygenerowanego quizu</button>
+              <button id="exportImportedQuiz" class="ghost-button" type="button" disabled>Eksportuj JSON</button>
+            </div>
+          </section>
         </section>
 
-        <div class="meta-row">
-          <span id="questionNumber">Pytanie</span>
-          <span id="poolSize">0 pytań w puli</span>
-        </div>
+        <section id="quizWorkspace" class="quiz-workspace" hidden>
+          <div class="mode-row" aria-label="Tryb quizu">
+            <span>Tryb</span>
+            <div class="mode-switch mode-switch-3">
+              <button id="endlessMode" class="mode-button active" type="button">Nieskończony</button>
+              <button id="finiteMode" class="mode-button" type="button">Bez powtórek</button>
+              <button id="worstMode" class="mode-button" type="button">Najgorsze</button>
+            </div>
+          </div>
 
-        <article class="question-card">
-          <p id="questionText" class="question-text"></p>
-          <img id="questionImage" class="question-image" alt="" hidden>
-          <div id="answerGrid" class="answer-grid"></div>
-          <div id="feedback" class="feedback" hidden></div>
-        </article>
+          <div class="mode-row" aria-label="Trudność odpowiedzi">
+            <span>Trudność</span>
+            <div class="mode-switch mode-switch-2">
+              <button id="normalDifficulty" class="mode-button active" type="button">Normal</button>
+              <button id="hardDifficulty" class="mode-button" type="button">Hard</button>
+            </div>
+          </div>
 
-        <footer class="controls">
-          <button id="checkButton" class="primary-button" type="button" hidden>Sprawdź odpowiedź</button>
-          <button id="previousButton" class="ghost-button" type="button">Poprzednie pytanie</button>
-          <button id="resetAnswerButton" class="ghost-button" type="button">Resetuj odpowiedź</button>
-          <button id="nextButton" class="primary-button" type="button">Następne pytanie</button>
-          <button id="resetButton" class="ghost-button" type="button">Zresetuj wynik</button>
-        </footer>
+          <div class="meta-row">
+            <span id="questionNumber">Pytanie</span>
+            <span id="poolSize">0 pytań w puli</span>
+          </div>
+
+          <article class="question-card">
+            <p id="questionText" class="question-text"></p>
+            <img id="questionImage" class="question-image" alt="" hidden>
+            <div id="answerGrid" class="answer-grid"></div>
+            <div id="feedback" class="feedback" hidden></div>
+          </article>
+
+          <footer class="controls">
+            <button id="checkButton" class="primary-button" type="button" hidden>Sprawdź odpowiedź</button>
+            <button id="previousButton" class="ghost-button" type="button">Poprzednie pytanie</button>
+            <button id="resetAnswerButton" class="ghost-button" type="button">Resetuj odpowiedź</button>
+            <button id="nextButton" class="primary-button" type="button">Następne pytanie</button>
+            <button id="resetButton" class="ghost-button" type="button">Zresetuj wynik</button>
+          </footer>
+        </section>
 
         <p class="app-credit">Piotr Popiołek 1.0.3</p>
       </section>

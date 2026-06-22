@@ -19,6 +19,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -76,6 +80,12 @@ h1 {
   letter-spacing: 0;
 }
 
+.top-actions {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+}
+
 .scoreboard {
   display: grid;
   grid-template-columns: repeat(2, minmax(128px, 1fr));
@@ -99,6 +109,90 @@ h1 {
   color: var(--ink);
   font-size: 1.55rem;
   line-height: 1;
+}
+
+.compact-button {
+  min-height: 38px;
+  padding: 0 14px;
+}
+
+.library-panel {
+  display: grid;
+  gap: 18px;
+  padding-top: 24px;
+}
+
+.section-heading {
+  display: grid;
+  gap: 6px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.55rem, 3vw, 2.3rem);
+  line-height: 1.08;
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.quiz-library {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.quiz-card-button {
+  display: grid;
+  gap: 9px;
+  min-height: 164px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfa;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.quiz-card-button:hover {
+  border-color: var(--accent);
+  background: #eef8f5;
+  transform: translateY(-1px);
+}
+
+.quiz-card-button strong {
+  font-size: 1.2rem;
+  line-height: 1.15;
+}
+
+.quiz-card-button span:not(.quiz-card-badge) {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.quiz-card-button small {
+  align-self: end;
+  color: var(--accent-dark);
+  font-weight: 850;
+}
+
+.quiz-card-badge {
+  width: fit-content;
+  border-radius: 999px;
+  background: #e6f3ef;
+  color: var(--accent-dark);
+  font-size: 0.76rem;
+  font-weight: 850;
+  padding: 5px 9px;
+}
+
+.quiz-workspace {
+  padding-top: 4px;
 }
 
 .meta-row {
@@ -636,8 +730,20 @@ select,
     display: grid;
   }
 
+  .top-actions {
+    justify-items: stretch;
+  }
+
   .scoreboard {
     width: 100%;
+  }
+
+  .compact-button {
+    width: 100%;
+  }
+
+  .quiz-library {
+    grid-template-columns: 1fr;
   }
 
   .mode-row {
