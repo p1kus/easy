@@ -1752,22 +1752,58 @@ function checkMultiSelect(item) {
   }
 
   let correct = true;
+  const selectedLetters = [];
+  const correctLetters = [];
+  const wrongLetters = [];
+  const missingLetters = [];
+
   inputs.forEach((input) => {
-    const row = item.items[Number(input.dataset.index)];
+    const index = Number(input.dataset.index);
+    const row = item.items[index];
+    const letter = row.text.match(/^([A-D])\./)?.[1] || String.fromCharCode(65 + index);
     const rowCorrect = input.checked === row.correct;
     correct = correct && rowCorrect;
     const choice = input.closest(".choice-control");
+
+    if (input.checked) {
+      selectedLetters.push(letter);
+    }
+    if (row.correct) {
+      correctLetters.push(letter);
+    }
+
     if (input.checked && row.correct) {
       choice.classList.add("row-correct");
+      addChoiceStatus(choice, "zaznaczono poprawnie");
     } else if (input.checked || row.correct) {
       choice.classList.add("row-wrong");
+      addChoiceStatus(choice, input.checked ? "zaznaczono błędnie" : "brakowało");
+      if (input.checked) {
+        wrongLetters.push(letter);
+      } else {
+        missingLetters.push(letter);
+      }
     }
     input.disabled = true;
   });
+
   const message = correct
-    ? "Dobrze."
-    : `Nie tym razem. Poprawne odpowiedzi:\n${item.items.filter((row) => row.correct).map((row) => row.text).join("\n")}`;
+    ? `Dobrze. Poprawne odpowiedzi: ${correctLetters.join(", ")}.`
+    : [
+      "Nie tym razem.",
+      `Twoje zaznaczenia: ${selectedLetters.join(", ") || "brak"}.`,
+      `Poprawne odpowiedzi: ${correctLetters.join(", ")}.`,
+      wrongLetters.length ? `Zaznaczone błędnie: ${wrongLetters.join(", ")}.` : "",
+      missingLetters.length ? `Brakujące poprawne: ${missingLetters.join(", ")}.` : "",
+    ].filter(Boolean).join("\n");
   return { complete: selectedAny, correct, message };
+}
+
+function addChoiceStatus(choice, text) {
+  const status = document.createElement("small");
+  status.className = "choice-status";
+  status.textContent = text;
+  choice.append(status);
 }
 
 function checkMatching(item) {

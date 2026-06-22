@@ -481,6 +481,14 @@ h1 {
   flex: 0 0 auto;
 }
 
+.choice-status {
+  margin-left: auto;
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
 .matching-row,
 .text-answer {
   display: grid;
@@ -777,6 +785,16 @@ select,
 
   .tf-table {
     grid-template-columns: minmax(0, 1fr) 68px 68px;
+  }
+
+  .choice-control {
+    flex-wrap: wrap;
+  }
+
+  .choice-status {
+    width: 100%;
+    margin-left: 30px;
+    white-space: normal;
   }
 
   .matching-row,
