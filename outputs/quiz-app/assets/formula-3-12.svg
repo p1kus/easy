@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 220" role="img" aria-label="lambda j divided by sum from l equals one to d lambda l">
+  <rect width="700" height="220" fill="#f8fcfd"/>
+  <text x="305" y="86" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-style="italic">λ<tspan baseline-shift="sub" font-size="30">j</tspan></text>
+  <line x1="230" y1="110" x2="470" y2="110" stroke="#16231b" stroke-width="4"/>
+  <text x="230" y="175" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="72">∑</text>
+  <text x="260" y="138" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="24" font-style="italic">d</text>
+  <text x="242" y="205" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-style="italic">l=1</text>
+  <text x="330" y="174" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-style="italic">λ<tspan baseline-shift="sub" font-size="28">l</tspan></text>
+</svg>

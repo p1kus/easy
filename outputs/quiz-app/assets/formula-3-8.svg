@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 220" role="img" aria-label="sigma jk equals one over n times sum from i equals one to n of x j i minus mu j times x k i minus mu k">
+  <rect width="920" height="220" fill="#f8fcfd"/>
+  <text x="88" y="132" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-style="italic">
+    <tspan>σ</tspan><tspan baseline-shift="sub" font-size="28">jk</tspan>
+    <tspan dx="18">=</tspan>
+  </text>
+  <text x="260" y="88" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="38">1</text>
+  <line x1="250" y1="104" x2="300" y2="104" stroke="#16231b" stroke-width="3"/>
+  <text x="259" y="150" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="38" font-style="italic">n</text>
+  <text x="330" y="130" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="86">∑</text>
+  <text x="362" y="60" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="26" font-style="italic">n</text>
+  <text x="342" y="172" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="24" font-style="italic">i=1</text>
+  <text x="430" y="132" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="50">
+    <tspan>(</tspan><tspan font-style="italic">x</tspan><tspan baseline-shift="sub" font-size="28" font-style="italic">j</tspan><tspan baseline-shift="super" font-size="28" font-style="italic">(i)</tspan><tspan> - </tspan><tspan font-style="italic">μ</tspan><tspan baseline-shift="sub" font-size="28" font-style="italic">j</tspan><tspan>)</tspan>
+    <tspan dx="18">(</tspan><tspan font-style="italic">x</tspan><tspan baseline-shift="sub" font-size="28" font-style="italic">k</tspan><tspan baseline-shift="super" font-size="28" font-style="italic">(i)</tspan><tspan> - </tspan><tspan font-style="italic">μ</tspan><tspan baseline-shift="sub" font-size="28" font-style="italic">k</tspan><tspan>)</tspan>
+  </text>
+</svg>

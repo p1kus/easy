@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" role="img" aria-label="d of x y squared equals norm x minus y sub two squared">
+  <rect width="760" height="180" fill="#f8fcfd"/>
+  <text x="115" y="112" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-style="italic">
+    d(x, y)<tspan baseline-shift="super" font-size="32">2</tspan>
+    <tspan font-style="normal"> = </tspan>
+    ||x - y||<tspan baseline-shift="sub" font-size="32">2</tspan><tspan baseline-shift="super" font-size="32">2</tspan>
+  </text>
+</svg>

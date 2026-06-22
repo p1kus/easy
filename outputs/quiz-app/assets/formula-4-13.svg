@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 220" role="img" aria-label="sum from i equals one to n sum from j equals one to k w i j times norm x i minus mu j squared">
+  <rect width="920" height="220" fill="#f8fcfd"/>
+  <text x="95" y="130" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="82">∑</text>
+  <text x="125" y="60" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="25" font-style="italic">n</text>
+  <text x="105" y="175" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-style="italic">i=1</text>
+  <text x="180" y="130" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="82">∑</text>
+  <text x="210" y="60" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="25" font-style="italic">k</text>
+  <text x="190" y="175" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-style="italic">j=1</text>
+  <text x="270" y="128" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="50" font-style="italic">
+    w<tspan baseline-shift="super" font-size="28">(i,j)</tspan>
+    <tspan dx="14">||x</tspan><tspan baseline-shift="super" font-size="28">(i)</tspan>
+    <tspan> - μ</tspan><tspan baseline-shift="super" font-size="28">(j)</tspan>
+    <tspan>||</tspan><tspan baseline-shift="super" font-size="28">2</tspan>
+  </text>
+</svg>

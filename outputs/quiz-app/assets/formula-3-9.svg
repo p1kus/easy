@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-label="Sigma covariance matrix three by three">
+  <rect width="820" height="300" fill="#f8fcfd"/>
+  <text x="70" y="165" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="58">Σ =</text>
+  <path d="M238 58 H220 V242 H238" fill="none" stroke="#16231b" stroke-width="4"/>
+  <path d="M650 58 H668 V242 H650" fill="none" stroke="#16231b" stroke-width="4"/>
+  <text x="275" y="112" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic">
+    <tspan>σ</tspan><tspan baseline-shift="sub" font-size="26">1</tspan><tspan baseline-shift="super" font-size="26">2</tspan>
+  </text>
+  <text x="420" y="112" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic">σ<tspan baseline-shift="sub" font-size="26">12</tspan></text>
+  <text x="548" y="112" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic">σ<tspan baseline-shift="sub" font-size="26">13</tspan></text>
+  <text x="275" y="168" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic">σ<tspan baseline-shift="sub" font-size="26">21</tspan></text>
+  <text x="420" y="168" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic">
+    <tspan>σ</tspan><tspan baseline-shift="sub" font-size="26">2</tspan><tspan baseline-shift="super" font-size="26">2</tspan>
+  </text>
+  <text x="548" y="168" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic">σ<tspan baseline-shift="sub" font-size="26">23</tspan></text>
+  <text x="275" y="224" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic">σ<tspan baseline-shift="sub" font-size="26">31</tspan></text>
+  <text x="420" y="224" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic">σ<tspan baseline-shift="sub" font-size="26">32</tspan></text>
+  <text x="548" y="224" fill="#16231b" font-family="Georgia, 'Times New Roman', serif" font-size="46" font-style="italic">
+    <tspan>σ</tspan><tspan baseline-shift="sub" font-size="26">3</tspan><tspan baseline-shift="super" font-size="26">2</tspan>
+  </text>
+</svg>
