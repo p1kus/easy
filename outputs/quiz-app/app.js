@@ -1651,7 +1651,12 @@ function checkMultiSelect(item) {
     const row = item.items[Number(input.dataset.index)];
     const rowCorrect = input.checked === row.correct;
     correct = correct && rowCorrect;
-    input.closest(".choice-control").classList.add(rowCorrect ? "row-correct" : "row-wrong");
+    const choice = input.closest(".choice-control");
+    if (input.checked && row.correct) {
+      choice.classList.add("row-correct");
+    } else if (input.checked || row.correct) {
+      choice.classList.add("row-wrong");
+    }
     input.disabled = true;
   });
   const message = correct
