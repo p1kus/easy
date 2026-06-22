@@ -156,23 +156,9 @@ h1 {
 
 .import-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: center;
+  gap: 10px;
   margin-top: 18px;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fbfcfa;
-}
-
-.import-title {
-  margin: 0 0 4px;
-  color: var(--accent-dark);
-  font-size: 0.78rem;
-  font-weight: 850;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  padding: 0;
 }
 
 .import-status {
@@ -188,15 +174,29 @@ h1 {
 
 .file-drop {
   display: grid;
+  gap: 8px;
   place-items: center;
-  min-height: 46px;
-  border: 1px dashed rgba(15, 118, 110, 0.55);
+  min-height: 132px;
+  border: 2px dashed rgba(15, 118, 110, 0.45);
   border-radius: 8px;
-  background: #f5fbf9;
+  background: #fbfcfa;
   color: var(--accent-dark);
   cursor: pointer;
+  padding: 24px;
+  text-align: center;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.file-drop:hover,
+.file-drop.drag-over {
+  border-color: var(--accent);
+  background: #eef8f5;
+}
+
+.file-drop-title {
+  color: var(--ink);
+  font-size: 1.05rem;
   font-weight: 850;
-  padding: 0 16px;
 }
 
 .file-drop input {
@@ -208,12 +208,10 @@ h1 {
 }
 
 .import-preview {
-  grid-column: 1 / -1;
   display: grid;
   gap: 8px;
   max-height: 220px;
   overflow: auto;
-  padding-top: 4px;
 }
 
 .import-preview[hidden] {
@@ -235,7 +233,6 @@ h1 {
 }
 
 .import-actions {
-  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -456,6 +453,18 @@ select,
   background: #eef8f5;
 }
 
+.drag-chip.dragging {
+  opacity: 0.55;
+}
+
+.drag-ghost {
+  position: fixed;
+  z-index: 20;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 10px 24px rgba(22, 35, 26, 0.18);
+}
+
 .drag-chip[hidden] {
   display: none;
 }
@@ -503,6 +512,10 @@ select,
 .drop-zone.drop-hover {
   border-color: var(--accent);
   background: #e5f5f1;
+}
+
+.drop-zone.disabled {
+  cursor: default;
 }
 
 .row-correct {

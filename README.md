@@ -24,6 +24,7 @@ Odpowiedź: B
 ```
 
 Obsługiwane są też pytania typu Prawda/Fałsz oraz pytania otwarte z linią `Odpowiedź: ...`.
+Importer wykrywa również poprawne odpowiedzi oznaczone kolorem, np. zielonym tekstem w PDF-ie, i tworzy pytania wielokrotnego wyboru, jeśli poprawnych odpowiedzi jest kilka.
 
 ## Netlify
 
@@ -32,4 +33,3 @@ Repo zawiera `netlify.toml`. Netlify powinno publikować folder:
 ```text
 outputs/quiz-app
 ```
-

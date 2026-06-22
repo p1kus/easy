@@ -365,6 +365,7 @@ const worstMode = document.querySelector("#worstMode");
 const normalDifficulty = document.querySelector("#normalDifficulty");
 const hardDifficulty = document.querySelector("#hardDifficulty");
 const pdfInput = document.querySelector("#pdfInput");
+const fileDrop = document.querySelector(".file-drop");
 const importStatus = document.querySelector("#importStatus");
 const importPreview = document.querySelector("#importPreview");
 const useImportedQuiz = document.querySelector("#useImportedQuiz");
@@ -564,6 +565,76 @@ function renderImportPreview(report) {
 }
 
 async function extractPdfText(file) {
+  const data = await extractPdfData(file);
+  return data.text;
+}
+
+function getOperatorText(args) {
+  const glyphs = args?.[0];
+  if (!Array.isArray(glyphs)) {
+    return "";
+  }
+
+  return glyphs
+    .map((glyph) => {
+      if (typeof glyph === "string") {
+        return glyph;
+      }
+      return glyph?.unicode || glyph?.str || "";
+    })
+    .join("");
+}
+
+function normalizePdfColor(args) {
+  if (!Array.isArray(args)) {
+    return null;
+  }
+  const values = args.slice(0, 3).map(Number);
+  if (values.length < 3 || values.some((value) => Number.isNaN(value))) {
+    return null;
+  }
+  const scale = values.some((value) => value > 1) ? 255 : 1;
+  return values.map((value) => value / scale);
+}
+
+function isCorrectAnswerColor(color) {
+  if (!color) {
+    return false;
+  }
+  const [r, g, b] = color;
+  return g > 0.45 && g > r * 1.35 && g > b * 1.2;
+}
+
+async function extractColoredTexts(page) {
+  const operators = await page.getOperatorList();
+  const OPS = window.pdfjsLib.OPS;
+  const coloredTexts = [];
+  let fillColor = [0, 0, 0];
+
+  operators.fnArray.forEach((fn, index) => {
+    const args = operators.argsArray[index];
+    if (fn === OPS.setFillRGBColor) {
+      fillColor = normalizePdfColor(args) || fillColor;
+      return;
+    }
+    if (fn === OPS.setFillGray) {
+      const gray = Number(args?.[0] ?? 0);
+      const normalized = gray > 1 ? gray / 255 : gray;
+      fillColor = [normalized, normalized, normalized];
+      return;
+    }
+    if (fn === OPS.showText || fn === OPS.showSpacedText) {
+      const text = normalizePlainText(getOperatorText(args));
+      if (text && isCorrectAnswerColor(fillColor)) {
+        coloredTexts.push(text);
+      }
+    }
+  });
+
+  return coloredTexts;
+}
+
+async function extractPdfData(file) {
   if (!window.pdfjsLib) {
     throw new Error("Nie udało się załadować pdf.js. Sprawdź połączenie z internetem.");
   }
@@ -571,6 +642,7 @@ async function extractPdfText(file) {
   const buffer = await file.arrayBuffer();
   const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
   const pages = [];
+  const coloredTexts = [];
 
   for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
     const page = await pdf.getPage(pageNumber);
@@ -596,13 +668,17 @@ async function extractPdfText(file) {
       .map(normalizePlainText)
       .filter(Boolean);
     pages.push(pageLines.join("\n"));
+    coloredTexts.push(...await extractColoredTexts(page));
   }
 
-  return pages.join("\n");
+  return {
+    text: pages.join("\n"),
+    coloredTexts,
+  };
 }
 
 function createImportedQuestion(candidate, answerKeys, skipped) {
-  const rawAnswer = normalizePlainText(candidate.answer || answerKeys[candidate.id] || "");
+  const rawAnswer = normalizePlainText(candidate.answer || answerKeys[candidate.id] || candidate.coloredAnswer || "");
   const questionTextValue = normalizePlainText([candidate.prompt, ...candidate.body].join(" "));
 
   if (!questionTextValue) {
@@ -610,10 +686,34 @@ function createImportedQuestion(candidate, answerKeys, skipped) {
   }
 
   if (candidate.options.length >= 2) {
+    const explicitLetters = rawAnswer
+      .split(/[,; ]+/)
+      .map((part) => part.trim().toUpperCase())
+      .filter((part) => /^[A-D]$/.test(part));
+    const correctLetters = new Set([
+      ...explicitLetters,
+      ...(candidate.coloredAnswers || []),
+    ]);
+
+    if (correctLetters.size > 1) {
+      return {
+        id: candidate.id,
+        question: questionTextValue,
+        answer: candidate.options.filter((option) => correctLetters.has(option.letter)).map((option) => option.text).join("; "),
+        type: "multiSelect",
+        items: candidate.options.map((option) => ({
+          text: `${option.letter}. ${option.text}`,
+          correct: correctLetters.has(option.letter),
+        })),
+        section: "import",
+        source: "import",
+      };
+    }
+
     let correctIndex = -1;
-    const letterAnswer = rawAnswer.match(/^[A-D]$/i)?.[0].toUpperCase();
-    if (letterAnswer) {
-      correctIndex = candidate.options.findIndex((option) => option.letter === letterAnswer);
+    if (correctLetters.size === 1) {
+      const [letter] = correctLetters;
+      correctIndex = candidate.options.findIndex((option) => option.letter === letter);
     }
 
     if (correctIndex < 0 && rawAnswer) {
@@ -671,6 +771,36 @@ function createImportedQuestion(candidate, answerKeys, skipped) {
 }
 
 function parseImportedQuiz(text, fileName) {
+  return parseImportedQuizData({ text, coloredTexts: [] }, fileName);
+}
+
+function applyColoredAnswers(candidates, coloredTexts) {
+  const normalizedColored = coloredTexts
+    .map((text) => normalizeComparable(text))
+    .filter((text) => text.length >= 3);
+
+  candidates.forEach((candidate) => {
+    candidate.coloredAnswers = [];
+    candidate.options.forEach((option) => {
+      const optionText = normalizeComparable(option.text);
+      const optionLetterText = normalizeComparable(`${option.letter} ${option.text}`);
+      const isColored = normalizedColored.some((colored) => (
+        optionText.includes(colored)
+        || colored.includes(optionText)
+        || optionLetterText.includes(colored)
+        || colored.includes(optionLetterText)
+      ));
+      if (isColored) {
+        candidate.coloredAnswer = option.letter;
+        candidate.coloredAnswers.push(option.letter);
+      }
+    });
+  });
+}
+
+function parseImportedQuizData(pdfData, fileName) {
+  const text = typeof pdfData === "string" ? pdfData : pdfData.text;
+  const coloredTexts = typeof pdfData === "string" ? [] : pdfData.coloredTexts || [];
   const lines = text
     .split(/\n+/)
     .map(normalizePlainText)
@@ -728,10 +858,17 @@ function parseImportedQuiz(text, fileName) {
       return;
     }
 
+    if (current.options.length) {
+      const lastOption = current.options[current.options.length - 1];
+      lastOption.text = `${lastOption.text} ${line}`;
+      return;
+    }
+
     current.body.push(line);
   });
 
   finishCurrent();
+  applyColoredAnswers(candidates, coloredTexts);
 
   const skipped = [];
   const questions = candidates
@@ -748,6 +885,7 @@ function parseImportedQuiz(text, fileName) {
 
 window.QuizImporter = {
   parse: parseImportedQuiz,
+  parseData: parseImportedQuizData,
 };
 
 function setQuizData(nextData) {
@@ -1038,10 +1176,17 @@ function getDragChip(value) {
   chip.textContent = value;
   chip.addEventListener("dragstart", (event) => {
     event.dataTransfer.setData("text/plain", value);
+    event.dataTransfer.effectAllowed = "move";
     chip.classList.add("dragging");
   });
   chip.addEventListener("dragend", () => {
     chip.classList.remove("dragging");
+  });
+  chip.addEventListener("pointerdown", (event) => {
+    if (chip.disabled || event.pointerType === "mouse") {
+      return;
+    }
+    startPointerDrag(event, chip);
   });
   chip.addEventListener("click", () => {
     if (chip.disabled) {
@@ -1055,6 +1200,41 @@ function getDragChip(value) {
   return chip;
 }
 
+function startPointerDrag(event, chip) {
+  const value = chip.dataset.value;
+  const ghost = chip.cloneNode(true);
+  ghost.className = "drag-chip drag-ghost";
+  ghost.style.left = `${event.clientX}px`;
+  ghost.style.top = `${event.clientY}px`;
+  document.body.append(ghost);
+  chip.classList.add("dragging");
+
+  const move = (moveEvent) => {
+    ghost.style.left = `${moveEvent.clientX}px`;
+    ghost.style.top = `${moveEvent.clientY}px`;
+    const target = document.elementFromPoint(moveEvent.clientX, moveEvent.clientY)?.closest?.(".drop-zone");
+    answerGrid.querySelectorAll(".drop-zone.drop-hover").forEach((zone) => zone.classList.remove("drop-hover"));
+    if (target) {
+      target.classList.add("drop-hover");
+    }
+  };
+
+  const finish = (upEvent) => {
+    document.removeEventListener("pointermove", move);
+    document.removeEventListener("pointerup", finish);
+    const target = document.elementFromPoint(upEvent.clientX, upEvent.clientY)?.closest?.(".drop-zone");
+    if (target) {
+      moveChipToZone(value, target);
+    }
+    answerGrid.querySelectorAll(".drop-zone.drop-hover").forEach((zone) => zone.classList.remove("drop-hover"));
+    chip.classList.remove("dragging");
+    ghost.remove();
+  };
+
+  document.addEventListener("pointermove", move);
+  document.addEventListener("pointerup", finish, { once: true });
+}
+
 function findDragChip(value) {
   return [...answerGrid.querySelectorAll(".drag-chip")]
     .find((chip) => chip.dataset.value === value);
@@ -1062,7 +1242,7 @@ function findDragChip(value) {
 
 function moveChipToZone(value, zone) {
   const chip = findDragChip(value);
-  if (!chip || zone.disabled) {
+  if (!chip || zone.classList.contains("disabled")) {
     return;
   }
 
@@ -1086,7 +1266,7 @@ function moveChipToZone(value, zone) {
 function clearDropZone(zone) {
   const value = zone.dataset.value;
   const bank = answerGrid.querySelector(".drag-bank");
-  if (!value || !bank || zone.disabled) {
+  if (!value || !bank || zone.classList.contains("disabled")) {
     return;
   }
 
@@ -1116,8 +1296,9 @@ function renderDragDropMatching(item) {
     line.className = "drop-row";
     const prompt = document.createElement("span");
     setFormattedText(prompt, row.prompt);
-    const zone = document.createElement("button");
-    zone.type = "button";
+    const zone = document.createElement("div");
+    zone.role = "button";
+    zone.tabIndex = 0;
     zone.className = "drop-zone";
     zone.dataset.index = String(index);
     zone.dataset.value = "";
@@ -1125,6 +1306,7 @@ function renderDragDropMatching(item) {
 
     zone.addEventListener("dragover", (event) => {
       event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
       zone.classList.add("drop-hover");
     });
     zone.addEventListener("dragleave", () => {
@@ -1142,6 +1324,12 @@ function renderDragDropMatching(item) {
         moveChipToZone(selected.dataset.value, zone);
       } else {
         clearDropZone(zone);
+      }
+    });
+    zone.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        zone.click();
       }
     });
 
@@ -1366,8 +1554,13 @@ function checkMatching(item) {
 
     if (complete) {
       answerGrid.querySelectorAll(".drag-chip, .drop-zone").forEach((control) => {
-        control.disabled = true;
-        control.draggable = false;
+        if (control.classList.contains("drag-chip")) {
+          control.disabled = true;
+          control.draggable = false;
+        } else {
+          control.classList.add("disabled");
+          control.setAttribute("aria-disabled", "true");
+        }
       });
     }
 
@@ -1523,7 +1716,7 @@ function setDifficulty(difficulty) {
 }
 
 async function handlePdfImport(event) {
-  const file = event.target.files?.[0];
+  const file = event.target?.files?.[0] || event;
   if (!file) {
     return;
   }
@@ -1535,14 +1728,14 @@ async function handlePdfImport(event) {
   setImportStatus(`Czytam PDF: ${file.name}...`);
 
   try {
-    const text = await extractPdfText(file);
-    const report = parseImportedQuiz(text, file.name);
+    const pdfData = await extractPdfData(file);
+    const report = parseImportedQuizData(pdfData, file.name);
     importedReport = report;
     importedQuiz = report.questions;
     renderImportPreview(report);
 
     if (!report.questions.length) {
-      setImportStatus("Nie udało się wykryć pytań z poprawnymi odpowiedziami. Spróbuj PDF-a z jawnym kluczem odpowiedzi.", true);
+      setImportStatus("Nie znalazłem pytań z odpowiedziami. Ten PDF może być skanem albo mieć nietypowy układ, którego importer jeszcze nie rozpoznaje.", true);
       return;
     }
 
@@ -1588,6 +1781,15 @@ function exportImportedQuestions() {
   URL.revokeObjectURL(url);
 }
 
+function handlePdfDrop(event) {
+  event.preventDefault();
+  fileDrop.classList.remove("drag-over");
+  const file = [...event.dataTransfer.files].find((item) => item.type === "application/pdf" || item.name.toLowerCase().endsWith(".pdf"));
+  if (file) {
+    handlePdfImport(file);
+  }
+}
+
 nextButton.addEventListener("click", drawQuestion);
 resetButton.addEventListener("click", resetScore);
 checkButton.addEventListener("click", checkStructuredAnswer);
@@ -1599,6 +1801,12 @@ worstMode.addEventListener("click", () => setMode("worst"));
 normalDifficulty.addEventListener("click", () => setDifficulty("normal"));
 hardDifficulty.addEventListener("click", () => setDifficulty("hard"));
 pdfInput.addEventListener("change", handlePdfImport);
+fileDrop.addEventListener("dragover", (event) => {
+  event.preventDefault();
+  fileDrop.classList.add("drag-over");
+});
+fileDrop.addEventListener("dragleave", () => fileDrop.classList.remove("drag-over"));
+fileDrop.addEventListener("drop", handlePdfDrop);
 useImportedQuiz.addEventListener("click", useImportedQuestions);
 resetDefaultQuiz.addEventListener("click", resetToDefaultQuestions);
 exportImportedQuiz.addEventListener("click", exportImportedQuestions);

@@ -38,13 +38,10 @@
         </div>
 
         <section class="import-panel" aria-label="Importer PDF">
-          <div>
-            <p class="import-title">Importer PDF</p>
-            <p id="importStatus" class="import-status">Wgraj PDF z pytaniami i odpowiedziami, żeby wygenerować własną pulę.</p>
-          </div>
           <label class="file-drop">
             <input id="pdfInput" type="file" accept="application/pdf">
-            <span>Wybierz PDF</span>
+            <span class="file-drop-title">Wrzuć PDF z pytaniami</span>
+            <span id="importStatus" class="import-status">Kliknij tutaj albo przeciągnij plik PDF.</span>
           </label>
           <div id="importPreview" class="import-preview" hidden></div>
           <div class="import-actions">
@@ -77,7 +74,7 @@
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="data.js?v=20260622-importer"></script>
-    <script src="app.js?v=20260622-importer"></script>
+    <script src="data.js?v=20260622-fix1"></script>
+    <script src="app.js?v=20260622-fix1"></script>
   </body>
 </html>
