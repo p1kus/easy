@@ -618,6 +618,14 @@ select,
   border-color: var(--accent);
 }
 
+.app-credit {
+  margin: 18px 0 0;
+  color: #8a958d;
+  font-size: 0.78rem;
+  font-weight: 650;
+  text-align: right;
+}
+
 @media (max-width: 760px) {
   .app-shell {
     width: min(100% - 20px, 980px);
@@ -677,5 +685,9 @@ select,
 
   .controls {
     display: grid;
+  }
+
+  .app-credit {
+    text-align: center;
   }
 }
