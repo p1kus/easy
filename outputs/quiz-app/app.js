@@ -704,6 +704,96 @@ async function extractColoredTexts(page, content) {
   }
 }
 
+function isQuestionLine(line) {
+  const questionMatch = line.match(/^(?:pytanie\s*)?(\d+(?:[.,]\d+)*)\s*[\).:-]?\s+(.{6,})$/i);
+  return questionMatch && !/^(rozdział|chapter|strona)\b/i.test(line) ? questionMatch : null;
+}
+
+function extractColoredOptionKeys(lines) {
+  const keys = [];
+  let currentId = null;
+
+  lines.forEach((line) => {
+    const text = normalizePlainText(line.text);
+    const questionMatch = isQuestionLine(text);
+    if (questionMatch) {
+      currentId = questionMatch[1].replace(",", ".");
+      return;
+    }
+
+    const optionMatch = text.match(/^([A-Da-d])\s*[\).:-]\s+(.+)$/);
+    if (!currentId || !optionMatch || !line.green) {
+      return;
+    }
+
+    keys.push({
+      id: currentId,
+      letter: optionMatch[1].toUpperCase(),
+    });
+  });
+
+  return keys;
+}
+
+async function extractPageTextAndColors(page, content) {
+  const scale = 2;
+  const viewport = page.getViewport({ scale });
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.ceil(viewport.width);
+  canvas.height = Math.ceil(viewport.height);
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  await page.render({ canvasContext: context, viewport }).promise;
+
+  const rows = new Map();
+  const coloredTexts = [];
+
+  content.items.forEach((item) => {
+    const text = normalizePlainText(item.str);
+    if (!text) {
+      return;
+    }
+
+    const transform = window.pdfjsLib.Util.transform(viewport.transform, item.transform);
+    const fontHeight = Math.hypot(transform[2], transform[3]) || (item.height || 10) * scale;
+    const x = transform[4];
+    const y = transform[5] - fontHeight;
+    const width = Math.max(item.width * scale, text.length * fontHeight * 0.25);
+    const height = fontHeight * 1.35;
+    const green = hasGreenPixels(canvas, x - 2, y - 2, width + 4, height + 4);
+    const rowKey = Math.round(item.transform[5]);
+
+    if (green) {
+      coloredTexts.push(text);
+    }
+
+    if (!rows.has(rowKey)) {
+      rows.set(rowKey, []);
+    }
+    rows.get(rowKey).push({ x: item.transform[4], text, green });
+  });
+
+  const lines = [...rows.entries()]
+    .sort((a, b) => b[0] - a[0])
+    .map(([, parts]) => {
+      const sorted = parts.sort((a, b) => a.x - b.x);
+      const text = normalizePlainText(sorted.map((part) => part.text).join(" "));
+      const totalChars = sorted.reduce((sum, part) => sum + part.text.length, 0);
+      const greenChars = sorted.reduce((sum, part) => sum + (part.green ? part.text.length : 0), 0);
+      const firstTextPart = sorted.find((part) => part.text.trim());
+      return {
+        text,
+        green: Boolean(firstTextPart?.green) || (greenChars >= 3 && greenChars / Math.max(1, totalChars) > 0.35),
+      };
+    })
+    .filter((line) => line.text);
+
+  return {
+    text: lines.map((line) => line.text).join("\n"),
+    coloredTexts,
+    coloredOptionKeys: extractColoredOptionKeys(lines),
+  };
+}
+
 async function extractPdfData(file) {
   const pdfjsLib = await ensurePdfJs();
 
@@ -711,37 +801,21 @@ async function extractPdfData(file) {
   const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
   const pages = [];
   const coloredTexts = [];
+  const coloredOptionKeys = [];
 
   for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
     const page = await pdf.getPage(pageNumber);
     const content = await page.getTextContent();
-    const rows = new Map();
-
-    content.items.forEach((item) => {
-      const text = normalizePlainText(item.str);
-      if (!text) {
-        return;
-      }
-      const y = Math.round(item.transform[5]);
-      const x = item.transform[4];
-      if (!rows.has(y)) {
-        rows.set(y, []);
-      }
-      rows.get(y).push({ x, text });
-    });
-
-    const pageLines = [...rows.entries()]
-      .sort((a, b) => b[0] - a[0])
-      .map(([, parts]) => parts.sort((a, b) => a.x - b.x).map((part) => part.text).join(" "))
-      .map(normalizePlainText)
-      .filter(Boolean);
-    pages.push(pageLines.join("\n"));
-    coloredTexts.push(...await extractColoredTexts(page, content));
+    const pageData = await extractPageTextAndColors(page, content);
+    pages.push(pageData.text);
+    coloredTexts.push(...pageData.coloredTexts);
+    coloredOptionKeys.push(...pageData.coloredOptionKeys);
   }
 
   return {
     text: pages.join("\n"),
     coloredTexts,
+    coloredOptionKeys,
   };
 }
 
@@ -842,7 +916,29 @@ function parseImportedQuiz(text, fileName) {
   return parseImportedQuizData({ text, coloredTexts: [] }, fileName);
 }
 
-function applyColoredAnswers(candidates, coloredTexts) {
+function applyColoredAnswers(candidates, coloredTexts, coloredOptionKeys = []) {
+  const keyedAnswers = new Map();
+  coloredOptionKeys.forEach((entry) => {
+    if (!entry.id || !/^[A-D]$/.test(entry.letter)) {
+      return;
+    }
+    if (!keyedAnswers.has(entry.id)) {
+      keyedAnswers.set(entry.id, new Set());
+    }
+    keyedAnswers.get(entry.id).add(entry.letter);
+  });
+
+  if (keyedAnswers.size) {
+    candidates.forEach((candidate) => {
+      const letters = keyedAnswers.get(candidate.id) || new Set();
+      candidate.coloredAnswers = [...letters].filter((letter) => (
+        candidate.options.some((option) => option.letter === letter)
+      ));
+      candidate.coloredAnswer = candidate.coloredAnswers[0] || "";
+    });
+    return;
+  }
+
   const normalizedColored = coloredTexts
     .map((text) => normalizeComparable(text))
     .filter((text) => text.length >= 3);
@@ -869,6 +965,7 @@ function applyColoredAnswers(candidates, coloredTexts) {
 function parseImportedQuizData(pdfData, fileName) {
   const text = typeof pdfData === "string" ? pdfData : pdfData.text;
   const coloredTexts = typeof pdfData === "string" ? [] : pdfData.coloredTexts || [];
+  const coloredOptionKeys = typeof pdfData === "string" ? [] : pdfData.coloredOptionKeys || [];
   const lines = text
     .split(/\n+/)
     .map(normalizePlainText)
@@ -936,7 +1033,7 @@ function parseImportedQuizData(pdfData, fileName) {
   });
 
   finishCurrent();
-  applyColoredAnswers(candidates, coloredTexts);
+  applyColoredAnswers(candidates, coloredTexts, coloredOptionKeys);
 
   const skipped = [];
   const questions = candidates
